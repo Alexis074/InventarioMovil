@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de inventarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; margin: 1rem; }
+        h1 { margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 0.5rem; font-size: 0.9rem; }
+        th { background: #f1f1f1; }
+        a { color: #e63946; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .top-bar a { text-decoration: none; color: #e63946; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{% url 'inventario:lista_vehiculos' %}">&larr; Volver</a>
+    </div>
+
+    <h1>Historial de inventarios</h1>
+    <p>Últimos controles realizados sobre los vehículos.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Vehículo</th>
+                <th>Responsable</th>
+                <th>Total ítems</th>
+                <th>Faltantes</th>
+                <th>Dañados</th>
+                <th>Detalle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in revisiones %}
+            <tr>
+                <td>{{ r.fecha|date:"Y-m-d H:i" }}</td>
+                <td>{{ r.vehiculo.codigo }}</td>
+                <td>{{ r.responsable }}</td>
+                <td style="text-align:center">{{ r.total_items }}</td>
+                <td style="text-align:center">{{ r.total_faltantes }}</td>
+                <td style="text-align:center">{{ r.total_danados }}</td>
+                <td><a href="{% url 'inventario:detalle_revision' r.id %}">Ver</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Todavía no hay revisiones registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+

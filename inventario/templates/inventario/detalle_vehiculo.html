@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ vehiculo.codigo }} - Inventario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; margin: 1rem; }
+        img { max-width: 100%; height: auto; border-radius: 8px; }
+        .top-bar { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+        .top-bar a { text-decoration: none; color: #e63946; }
+        .top-bar h2 { margin: 0; }
+        .help { margin-top: 0.5rem; color: #555; }
+        .grid {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+        .compartimento-btn {
+            display: block;
+            padding: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            background: #e63946;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+        }
+        .compartimento-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{% url 'inventario:lista_vehiculos' %}">&larr; Volver</a>
+        <h2>{{ vehiculo.codigo }} - {{ vehiculo.nombre }}</h2>
+    </div>
+
+    <p class="help">
+        Elige qué compartimento quieres revisar:
+    </p>
+
+    <div class="grid">
+        {% for c in compartimentos %}
+            <a class="compartimento-btn"
+               href="{% url 'inventario:revision_compartimento' c.id %}">
+                {{ c.nombre }}
+            </a>
+        {% empty %}
+            <p>No hay compartimentos configurados para este vehículo.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
+

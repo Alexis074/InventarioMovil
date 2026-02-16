@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario - Vehículos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: sans-serif; margin: 1rem; }
+        h1 { margin-bottom: 0.25rem; text-align: center; }
+        .subtitle { text-align: center; margin-bottom: 1.2rem; color: #555; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.2rem;
+            align-items: stretch;
+        }
+        .card {
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            height: 100%;
+            margin: 0.2rem;
+        }
+        .card-completado {
+            border-color: #2a9d8f;
+            background: #e6f4f1;
+        }
+        a { text-decoration: none; color: inherit; }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            background: #e63946;
+            color: white;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .card a:last-child {
+            margin-top: auto;
+        }
+        .vehiculo-img {
+            max-width: 100%;
+            max-height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventario</h1>
+    <p class="subtitle">
+        Responsable: <strong>{{ responsable }}</strong>
+        • <a href="{% url 'inventario:inicio' %}">Cambiar responsable</a>
+        • <a href="{% url 'inventario:historial_revisiones' %}">Ver historial</a>
+    </p>
+
+    <div class="grid">
+        {% for v in vehiculos %}
+        <div class="card {% if v.id in vehiculos_completados %}card-completado{% endif %}">
+            <p><strong>{{ v.codigo }}</strong></p>
+            <p>{{ v.nombre }}</p>
+            {% if v.imagen %}
+                <img src="{{ v.imagen.url }}" alt="Foto de {{ v.codigo }}" class="vehiculo-img">
+            {% endif %}
+            <a href="{% url 'inventario:detalle_vehiculo' v.id %}">
+                <button>Revisar</button>
+            </a>
+        </div>
+        {% empty %}
+        <p>No hay vehículos dados de alta todavía.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
+

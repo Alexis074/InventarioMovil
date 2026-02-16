@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle revisión {{ revision.id }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; margin: 1rem; }
+        h1 { margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 0.5rem; font-size: 0.9rem; }
+        th { background: #f1f1f1; }
+        .top-bar a { text-decoration: none; color: #e63946; }
+        .estado-ok { color: #2a9d8f; }
+        .estado-faltante { color: #e76f51; font-weight: bold; }
+        .estado-danado { color: #e9c46a; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{% url 'inventario:historial_revisiones' %}">&larr; Volver al historial</a>
+    </div>
+
+    <h1>Detalle de revisión</h1>
+    <p>
+        <strong>Vehículo:</strong> {{ revision.vehiculo.codigo }} - {{ revision.vehiculo.nombre }}<br>
+        <strong>Fecha:</strong> {{ revision.fecha|date:"Y-m-d H:i" }}<br>
+        <strong>Responsable:</strong> {{ revision.responsable }}
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Compartimento</th>
+                <th>Ítem</th>
+                <th>Estado</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ir in items_revision %}
+            <tr>
+                <td>{{ ir.item.compartimento.nombre }}</td>
+                <td>{{ ir.item.nombre }}</td>
+                <td>
+                    <span class="estado-{{ ir.estado }}">
+                        {{ ir.get_estado_display }}
+                    </span>
+                </td>
+                <td>{{ ir.observaciones }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Esta revisión no tiene ítems registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+

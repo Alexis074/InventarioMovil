@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisión {{ compartimento }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; margin: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ccc; padding: 0.5rem; }
+        th { background: #f1f1f1; }
+        select, textarea, input[type="text"] { width: 100%; box-sizing: border-box; }
+        button {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .top-bar a { text-decoration: none; color: #e63946; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{% url 'inventario:detalle_vehiculo' compartimento.vehiculo.id %}">&larr; Volver</a>
+    </div>
+
+    <h2>Revisión - {{ compartimento.vehiculo.codigo }} / {{ compartimento.nombre }}</h2>
+    <p><strong>Responsable:</strong> {{ responsable|default:"Sin nombre" }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Ítem</th>
+                    <th>Cant. esperada</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.nombre }}</td>
+                    <td style="text-align: center;">{{ item.cantidad_esperada }}</td>
+                    <td>
+                        <select name="estado_{{ item.id }}">
+                            <option value="ok">Completo</option>
+                            <option value="faltante">Faltante</option>
+                            <option value="danado">Dañado</option>
+                        </select>
+                    </td>
+                    <td>
+                        <textarea name="obs_{{ item.id }}" rows="2"></textarea>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No hay ítems configurados para este compartimento.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit">Guardar revisión</button>
+    </form>
+</body>
+</html>
+
