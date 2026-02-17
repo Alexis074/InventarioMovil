@@ -22,7 +22,7 @@ from .serializers import (
 class VehiculoViewSet(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet para gestionar vehículos.
-    Solo lectura (GET) para mantener integridad de datos.
+    Solo lectura (GET) para mantener integridad de los datos.
     """
     queryset = Vehiculo.objects.filter(activo=True).prefetch_related(
         'compartimentos__equipos'
