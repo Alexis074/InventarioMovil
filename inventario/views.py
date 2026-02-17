@@ -4,7 +4,7 @@ ViewSets para la API REST del sistema de inventario.
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 from django.utils import timezone
 from django.db.models import Count, Q
 
@@ -28,7 +28,7 @@ class VehiculoViewSet(viewsets.ReadOnlyModelViewSet):
         'compartimentos__equipos'
     )
     serializer_class = VehiculoSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     @action(detail=True, methods=['get'])
     def estado(self, request, pk=None):
@@ -146,7 +146,7 @@ class CompartimentoViewSet(viewsets.ModelViewSet):
     """ViewSet para compartimentos (crear, listar, editar, eliminar)."""
     queryset = Compartimento.objects.filter(activo=True).prefetch_related('equipos')
     serializer_class = CompartimentoSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = Compartimento.objects.filter(activo=True).prefetch_related('equipos')
@@ -160,7 +160,7 @@ class EquipoViewSet(viewsets.ModelViewSet):
     """ViewSet para equipos (crear, listar, editar, eliminar)."""
     queryset = Equipo.objects.filter(activo=True)
     serializer_class = EquipoSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = Equipo.objects.filter(activo=True)
@@ -181,7 +181,7 @@ class RevisionViewSet(viewsets.ModelViewSet):
     queryset = Revision.objects.select_related('vehiculo', 'usuario').prefetch_related(
         'detalles_revision__equipo__compartimento'
     ).all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get_serializer_class(self):
         if self.action == 'create':

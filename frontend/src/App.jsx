@@ -9,78 +9,57 @@ import GestionarInventario from './components/GestionarInventario';
 import LoginForm from './components/LoginForm';
 
 function App() {
-  const [responsable, setResponsable] = useState(() => {
-    // Cargar responsable desde localStorage al iniciar
-    return localStorage.getItem('inventario_responsable') || '';
-  });
+  const [responsable, setResponsable] = useState(getResponsableDefault());
 
-  useEffect(() => {
-    // Guardar responsable en localStorage cuando cambie
-    if (responsable) {
-      localStorage.setItem('inventario_responsable', responsable);
-    } else {
-      localStorage.removeItem('inventario_responsable');
+  function getResponsableDefault() {
+    // 0: Domingo, 1: Lunes, 2: Martes, 3: Miércoles, 4: Jueves, 5: Viernes, 6: Sábado
+    const dia = new Date().getDay();
+    switch (dia) {
+      case 1: /** Lunes */ return "Grupo 4";
+      case 2: /** Martes */ return "Grupo 1";
+      case 3: /** Miércoles */ return "Grupo 2";
+      case 4: /** Jueves */ return "Grupo 3";
+      case 5: /** Viernes */ return "Grupo 5";
+      default: return "Personal Rentado";
     }
-  }, [responsable]);
+  }
 
-  const handleLogin = (nombre) => {
-    setResponsable(nombre);
-  };
+  // Si el usuario cambia el responsable manualmente, lo actualizamos.
+  // Pero la inicialización SIEMPRE respeta el día, a menos que queramos persistencia (el prompt dice "segun el dia ya debe estar preseleccoionada").
+  // Por lo tanto, no uso localStorage para persistir entre recargas si el requerimiento es estricto con el día.
 
-  const handleCambiarResponsable = () => {
-    setResponsable('');
+  const handleCambiarResponsable = (nuevoResponsable) => {
+    setResponsable(nuevoResponsable);
   };
 
   return (
     <Router>
       <Routes>
         <Route
-          path="/login"
-          element={
-            responsable ? (
-              <Navigate to="/" replace />
-            ) : (
-              <LoginForm onLogin={handleLogin} />
-            )
-          }
-        />
-        <Route
           path="/"
           element={
-            responsable ? (
-              <Dashboard
-                responsable={responsable}
-                onCambiarResponsable={handleCambiarResponsable}
-              />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            <Dashboard
+              responsable={responsable}
+              onCambiarResponsable={handleCambiarResponsable}
+            />
           }
         />
         <Route
           path="/vehiculo/:id"
           element={
-            responsable ? (
-              <RevisionView
-                responsable={responsable}
-                onCambiarResponsable={handleCambiarResponsable}
-              />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            <RevisionView
+              responsable={responsable}
+              onCambiarResponsable={handleCambiarResponsable}
+            />
           }
         />
         <Route
           path="/vehiculo/:id/items"
           element={
-            responsable ? (
-              <GestionarInventario
-                responsable={responsable}
-                onCambiarResponsable={handleCambiarResponsable}
-              />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            <GestionarInventario
+              responsable={responsable}
+              onCambiarResponsable={handleCambiarResponsable}
+            />
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
